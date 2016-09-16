@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 15, 2016 at 03:44 AM
+-- Generation Time: Sep 16, 2016 at 09:51 AM
 -- Server version: 5.6.20
 -- PHP Version: 5.5.15
 
@@ -32,6 +32,7 @@ CREATE TABLE IF NOT EXISTS `equipment` (
   `name` varchar(255) NOT NULL,
   `description` varchar(255) NOT NULL,
   `lab` int(11) NOT NULL,
+  `classificationID` int(11) NOT NULL,
   `specification` varchar(500) NOT NULL,
   `date_received` date NOT NULL,
   `received_by` int(11) NOT NULL,
@@ -41,15 +42,15 @@ CREATE TABLE IF NOT EXISTS `equipment` (
   `usagestatus` tinyint(1) NOT NULL,
   `lengthofuse` date NOT NULL,
   `remarks` varchar(255) NOT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=11 ;
 
 --
 -- Dumping data for table `equipment`
 --
 
-INSERT INTO `equipment` (`ID`, `equipmentID`, `name`, `description`, `lab`, `specification`, `date_received`, `received_by`, `amount`, `supplier`, `status`, `usagestatus`, `lengthofuse`, `remarks`) VALUES
-(1, '12345', 'Balance Beam', 'Use for balancing the world', 1, 'specs here', '2016-02-01', 1, 25000, 1, 1, 0, '2016-02-02', 'use with care'),
-(2, '22222', 'graduated cylnder', 'measuring graduates haha', 2, 'nothing', '2016-01-01', 2, 2000, 3, 2, 0, '2016-01-01', 'haaha');
+INSERT INTO `equipment` (`ID`, `equipmentID`, `name`, `description`, `lab`, `classificationID`, `specification`, `date_received`, `received_by`, `amount`, `supplier`, `status`, `usagestatus`, `lengthofuse`, `remarks`) VALUES
+(9, '99999', 'Host', 'aaaaaa', 2, 2, 'qwerty', '2016-01-02', 2, 2, 2, 2, 1, '0000-00-00', 'asdasdasd'),
+(10, '23121', 'Test tube rock', 'bbbbb', 3, 1, 'qwerty', '2016-03-02', 2, 5, 5, 1, 0, '0000-00-00', 'asdasdsa');
 
 -- --------------------------------------------------------
 
@@ -59,18 +60,68 @@ INSERT INTO `equipment` (`ID`, `equipmentID`, `name`, `description`, `lab`, `spe
 
 CREATE TABLE IF NOT EXISTS `equipmentcalibration` (
 `ID` int(11) NOT NULL,
-  `usageID` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
-  `calibrationdata` text NOT NULL,
-  `remarks` varchar(255) NOT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+  `equipmentID` varchar(200) NOT NULL,
+  `date` date NOT NULL,
+  `isdone` tinyint(1) NOT NULL,
+  `certificate` text
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
 
 --
 -- Dumping data for table `equipmentcalibration`
 --
 
-INSERT INTO `equipmentcalibration` (`ID`, `usageID`, `user_id`, `calibrationdata`, `remarks`) VALUES
-(1, 1, 0, 'sample calibration data', 'sample remarks');
+INSERT INTO `equipmentcalibration` (`ID`, `user_id`, `equipmentID`, `date`, `isdone`, `certificate`) VALUES
+(2, 0, '23121', '2016-03-31', 0, 'hhh.pdf'),
+(3, 0, '23121', '2016-06-22', 1, '2016-04-28-97-Participants_half.pdf'),
+(4, 2, '23121', '2016-04-30', 0, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `equipmentclassification`
+--
+
+CREATE TABLE IF NOT EXISTS `equipmentclassification` (
+`ID` int(11) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `description` varchar(200) NOT NULL
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+
+--
+-- Dumping data for table `equipmentclassification`
+--
+
+INSERT INTO `equipmentclassification` (`ID`, `name`, `description`) VALUES
+(1, 'Testing Equipment', 'for testing'),
+(2, 'Peripheral', 'just Peripheral');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `equipmentmaintenance`
+--
+
+CREATE TABLE IF NOT EXISTS `equipmentmaintenance` (
+`ID` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `equipmentID` varchar(200) NOT NULL,
+  `date` date NOT NULL,
+  `type` tinyint(1) NOT NULL,
+  `isdone` tinyint(1) NOT NULL DEFAULT '0',
+  `maintenancedata` text
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
+
+--
+-- Dumping data for table `equipmentmaintenance`
+--
+
+INSERT INTO `equipmentmaintenance` (`ID`, `user_id`, `equipmentID`, `date`, `type`, `isdone`, `maintenancedata`) VALUES
+(1, 0, '99999', '2016-03-30', 0, 1, NULL),
+(2, 0, '23121', '2016-03-30', 0, 1, NULL),
+(3, 0, '23121', '2016-04-07', 0, 1, '2016-04-28-75-resource-management-team.pdf'),
+(4, 0, '99999', '2016-04-07', 0, 1, '2016-04-08-Book1.pdf'),
+(5, 2, '23121', '2016-04-30', 0, 0, NULL);
 
 -- --------------------------------------------------------
 
@@ -106,22 +157,15 @@ CREATE TABLE IF NOT EXISTS `equipmentusage` (
   `startdate` datetime NOT NULL,
   `enddate` datetime NOT NULL,
   `remarks` varchar(255) NOT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=11 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=16 ;
 
 --
 -- Dumping data for table `equipmentusage`
 --
 
 INSERT INTO `equipmentusage` (`ID`, `user_id`, `equipmentID`, `status`, `startdate`, `enddate`, `remarks`) VALUES
-(1, 0, '1', 1, '2016-03-07 00:00:00', '2016-03-07 00:00:00', 'sample remarks'),
-(2, 0, '22222', 1, '0000-00-00 00:00:00', '0000-00-00 00:00:00', 'passed'),
-(3, 0, '22222', 1, '2016-03-14 00:00:00', '2016-03-14 07:24:03', '22222 latest test grrr'),
-(4, 0, '12345', 1, '2016-03-13 00:00:00', '0000-00-00 00:00:00', 'Hahaha it works'),
-(5, 0, '22222', 1, '0000-00-00 00:00:00', '0000-00-00 00:00:00', 'Wahahahahaha'),
-(6, 0, '12345', 1, '0000-00-00 00:00:00', '0000-00-00 00:00:00', 'passed'),
-(8, 0, '12345', 1, '2016-03-14 08:30:08', '2016-03-14 09:01:57', 'testing 1'),
-(9, 0, '12345', 1, '2016-03-14 10:02:32', '2016-03-14 10:03:05', 'Start Usage: i need you\n End Usage: its a joke'),
-(10, 0, '12345', 1, '2016-03-14 10:03:44', '2016-03-14 10:04:01', 'Start Usage: wew\n End Usage: hahaha');
+(14, 2, '23121', 1, '2016-04-22 04:32:44', '2016-04-22 04:37:46', 'Start Usage: asdasdfasf\n End Usage: asdfsfdsfdsfs'),
+(15, 2, '23121', 1, '2016-04-22 08:00:10', '2016-04-22 08:00:42', 'Start Usage: Hahahaha\n\n End Usage: Wew hehehe\n');
 
 --
 -- Indexes for dumped tables
@@ -137,6 +181,18 @@ ALTER TABLE `equipment`
 -- Indexes for table `equipmentcalibration`
 --
 ALTER TABLE `equipmentcalibration`
+ ADD PRIMARY KEY (`ID`);
+
+--
+-- Indexes for table `equipmentclassification`
+--
+ALTER TABLE `equipmentclassification`
+ ADD PRIMARY KEY (`ID`);
+
+--
+-- Indexes for table `equipmentmaintenance`
+--
+ALTER TABLE `equipmentmaintenance`
  ADD PRIMARY KEY (`ID`);
 
 --
@@ -159,12 +215,22 @@ ALTER TABLE `equipmentusage`
 -- AUTO_INCREMENT for table `equipment`
 --
 ALTER TABLE `equipment`
-MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
+MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=11;
 --
 -- AUTO_INCREMENT for table `equipmentcalibration`
 --
 ALTER TABLE `equipmentcalibration`
-MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
+MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=5;
+--
+-- AUTO_INCREMENT for table `equipmentclassification`
+--
+ALTER TABLE `equipmentclassification`
+MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
+--
+-- AUTO_INCREMENT for table `equipmentmaintenance`
+--
+ALTER TABLE `equipmentmaintenance`
+MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=6;
 --
 -- AUTO_INCREMENT for table `equipmentstatus`
 --
@@ -174,7 +240,7 @@ MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
 -- AUTO_INCREMENT for table `equipmentusage`
 --
 ALTER TABLE `equipmentusage`
-MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=11;
+MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=16;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
